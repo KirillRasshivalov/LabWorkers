@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0"
+             xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="labwork_pu" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <non-jta-data-source>java:/PostgresDS</non-jta-data-source>
+
+
+        <class>algo.demo.database.LocationTable</class>
+        <class>algo.demo.database.PersonTable</class>
+        <class>algo.demo.database.DisciplineTable</class>
+        <class>algo.demo.database.CoordinatesTable</class>
+        <class>algo.demo.database.LabWorkTable</class>
+
+        <properties>
+            <property name="jakarta.persistence.jdbc.url" value="${DB_HOST}"/>
+            <property name="jakarta.persistence.jdbc.user" value="${DB_USERNAME}"/>
+            <property name="jakarta.persistence.jdbc.password" value="${DB_PASSWORD}"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <property name="hibernate.connection.pool_size" value="10"/>
+        </properties>
+    </persistence-unit>
+</persistence>
