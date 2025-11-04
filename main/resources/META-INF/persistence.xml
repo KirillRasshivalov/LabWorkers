@@ -16,11 +16,12 @@
         <class>algo.demo.database.DisciplineTable</class>
         <class>algo.demo.database.CoordinatesTable</class>
         <class>algo.demo.database.LabWorkTable</class>
+        <class>algo.demo.database.UsersTable</class>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="${DB_HOST}"/>
-            <property name="jakarta.persistence.jdbc.user" value="${DB_USERNAME}"/>
-            <property name="jakarta.persistence.jdbc.password" value="${DB_PASSWORD}"/>
+            <property name="jakarta.persistence.jdbc.url" value="${DB_HOST_LOCAL}"/>
+            <property name="jakarta.persistence.jdbc.user" value="${DB_USERNAME_LOCAL}"/>
+            <property name="jakarta.persistence.jdbc.password" value="${DB_PASSWORD_LOCAL}"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
 
             <property name="hibernate.hbm2ddl.auto" value="update"/>
