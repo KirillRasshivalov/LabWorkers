@@ -1,4 +1,4 @@
-package algo.demo.jwt;
+package algo.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
