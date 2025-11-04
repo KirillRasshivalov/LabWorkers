@@ -2,7 +2,7 @@ package algo.demo.controllers;
 
 import algo.demo.dto.AuthResponse;
 import algo.demo.dto.UserLoginRequest;
-import algo.demo.jwt.JwtUtil;
+import algo.demo.security.JwtUtil;
 import algo.demo.services.AuthorisationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -38,6 +38,15 @@ public class AuthorisationController {
                             null,
                             null,
                             "Неверные данные для регистрации.")
+                    )
+                    .build();
+        }
+        if (authorisationService.isNameInUsers(userLoginRequest.username())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new AuthResponse(
+                            null,
+                            null,
+                            "Придумайте другой логин. Этот уже используется.")
                     )
                     .build();
         }
