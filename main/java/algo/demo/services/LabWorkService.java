@@ -2,6 +2,7 @@ package algo.demo.services;
 
 import algo.demo.database.*;
 import algo.demo.dto.LabWork;
+import algo.demo.exceptions.DefaultError;
 import algo.demo.repository.LabWorkRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,7 +25,7 @@ public class LabWorkService {
             return labWorkRepository.addLbWork(labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new DefaultError(e.getMessage());
         }
     }
 
@@ -33,7 +34,7 @@ public class LabWorkService {
             return labWorkRepository.updateLabWorkById(id, labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new DefaultError(e.getMessage());
         }
     }
 
@@ -42,6 +43,7 @@ public class LabWorkService {
             labWorkRepository.deleteLabWorkById(id);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            throw new DefaultError(e.getMessage());
         }
     }
 
@@ -50,7 +52,7 @@ public class LabWorkService {
             return labWorkRepository.getAllLabWorkTables();
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new DefaultError(e.getMessage());
         }
     }
 
@@ -59,7 +61,7 @@ public class LabWorkService {
             return labWorkRepository.getLabWorkById(id);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return null;
+            throw new DefaultError(e.getMessage());
         }
     }
 }
