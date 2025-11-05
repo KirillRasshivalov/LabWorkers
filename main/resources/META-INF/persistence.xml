@@ -17,6 +17,7 @@
         <class>algo.demo.database.CoordinatesTable</class>
         <class>algo.demo.database.LabWorkTable</class>
         <class>algo.demo.database.UsersTable</class>
+        <class>algo.demo.database.ImportHistoryTable</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="${DB_HOST_LOCAL}"/>
