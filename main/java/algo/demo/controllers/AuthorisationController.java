@@ -2,6 +2,8 @@ package algo.demo.controllers;
 
 import algo.demo.dto.AuthResponse;
 import algo.demo.dto.UserLoginRequest;
+import algo.demo.exceptions.LoginException;
+import algo.demo.exceptions.RegistrationException;
 import algo.demo.security.JwtUtil;
 import algo.demo.services.AuthorisationService;
 import jakarta.inject.Inject;
@@ -23,36 +25,15 @@ public class AuthorisationController {
     @Inject
     private AuthorisationService authorisationService;
 
-    @Inject
-    private JwtUtil jwtUtil;
-
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(UserLoginRequest userLoginRequest) {
         logger.info("Пришел запрос на регистрацию.");
-        if (!authorisationService.isDataCorrect(userLoginRequest)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new AuthResponse(
-                            null,
-                            null,
-                            "Неверные данные для регистрации.")
-                    )
-                    .build();
-        }
-        if (authorisationService.isNameInUsers(userLoginRequest.username())) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new AuthResponse(
-                            null,
-                            null,
-                            "Придумайте другой логин. Этот уже используется.")
-                    )
-                    .build();
-        }
         try {
             authorisationService.registerUser(userLoginRequest);
-            String token = jwtUtil.generateToken(userLoginRequest.username());
+            String token = authorisationService.getToken(userLoginRequest);
             return Response.ok()
                     .entity(new AuthResponse(
                             token,
@@ -61,13 +42,7 @@ public class AuthorisationController {
                     )
                     .build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new AuthResponse(
-                            null,
-                            null,
-                            e.getMessage())
-                    )
-                    .build();
+            throw new RegistrationException(e.getMessage());
         }
     }
 
@@ -77,37 +52,18 @@ public class AuthorisationController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enterUser(UserLoginRequest userLoginRequest) {
         logger.info("Пришел запрос на авторизацию.");
-        if (!authorisationService.isDataCorrect(userLoginRequest)) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Неверные данные для входа.")
-                    .build();
-        }
         try {
-            if (authorisationService.isUserCorrect(userLoginRequest)) {
-                String token = jwtUtil.generateToken(userLoginRequest.username());
-                return Response.ok()
-                        .entity(new AuthResponse(
-                                token,
-                                userLoginRequest.username(),
-                                "Пользователь подтвержден.")
-                        )
-                        .build();
-            }
-            return Response.status(Response.Status.FORBIDDEN)
+            authorisationService.isUserCorrect(userLoginRequest);
+            String token = authorisationService.getToken(userLoginRequest);
+            return Response.ok()
                     .entity(new AuthResponse(
-                            null,
-                            null,
-                            "Неверный пароль или имя пользователя.")
+                            token,
+                            userLoginRequest.username(),
+                            "Пользователь подтвержден.")
                     )
                     .build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new AuthResponse(
-                            null,
-                            null,
-                            e.getMessage())
-                    )
-                    .build();
+            throw new LoginException(e.getMessage());
         }
     }
 }
