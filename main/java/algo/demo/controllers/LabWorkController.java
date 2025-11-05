@@ -2,9 +2,11 @@ package algo.demo.controllers;
 
 import algo.demo.database.LabWorkTable;
 import algo.demo.dto.LabWork;
+import algo.demo.security.JwtUtil;
 import algo.demo.services.LabWorkService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -20,13 +22,18 @@ public class LabWorkController {
     @Inject
     private LabWorkService labWorkService;
 
+    @Inject
+    private JwtUtil jwtUtil;
+
 
     @POST
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addNewLabWork(LabWork labWork) {
-        logger.info("Пришел запрос на добавление нового лаб ворка.");
+    public Response addNewLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
+                                  LabWork labWork)
+    {
+        logger.info("Пришел запрос на добавление нового лаб ворка от пользователя: " + jwtUtil.extractUsername(jwtToken));
         try {
             LabWorkTable createdLabWork = labWorkService.addLabWork(labWork);
             logger.info("Лаб воркер успешно добавлен.");
@@ -45,8 +52,12 @@ public class LabWorkController {
     @Path("/update/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateLabWork(@PathParam("id") Long id, LabWork labWork) {
-        logger.info("Пришел запрос на обновление коллекции с id = " + id);
+    public Response updateLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
+                                  @PathParam("id") Long id,
+                                  LabWork labWork)
+    {
+        logger.info("Пришел запрос на обновление коллекции с id = " + id + '\n' +
+                "От пользователя " + jwtUtil.extractUsername(jwtToken));
         try {
             LabWorkTable updatedLabWork = labWorkService.updateLabWork(id, labWork);
             logger.info("Лаб воркер успешно обновлен.");
@@ -65,8 +76,11 @@ public class LabWorkController {
     @Path("/delete/{id}")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response deleteLabWork(@PathParam("id") Long id) {
-        logger.info("Пришел запрос на удаление лаб воркера по id = " + id);
+    public Response deleteLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
+                                  @PathParam("id") Long id)
+    {
+        logger.info("Пришел запрос на удаление лаб воркера по id = " + id + '\n' +
+                "От пользователя " + jwtUtil.extractUsername(jwtToken));
         try {
             labWorkService.deleteLabWork(id);
             logger.info("Лаб воркер успешно удален.");
@@ -103,8 +117,10 @@ public class LabWorkController {
     @GET
     @Path("/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLabWork(@PathParam("id") Long id) {
-        logger.info("Пришел запрос на получение пользователя по id = " + id);
+    public Response getLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
+                               @PathParam("id") Long id) {
+        logger.info("Пришел запрос на получение пользователя по id = " + id + '\n' +
+                "От пользователя " + jwtUtil.extractUsername(jwtToken));
         try {
             LabWorkTable labWorkTable = labWorkService.getLabWorkById(id);
             logger.info("Удалось успешно получить лаь воркера.");
