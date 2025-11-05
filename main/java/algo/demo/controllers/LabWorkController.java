@@ -2,8 +2,10 @@ package algo.demo.controllers;
 
 import algo.demo.database.LabWorkTable;
 import algo.demo.dto.LabWork;
+import algo.demo.exceptions.DefaultError;
 import algo.demo.security.JwtUtil;
 import algo.demo.services.LabWorkService;
+import algo.demo.services.UserService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -23,8 +25,7 @@ public class LabWorkController {
     private LabWorkService labWorkService;
 
     @Inject
-    private JwtUtil jwtUtil;
-
+    private UserService userService;
 
     @POST
     @Path("/create")
@@ -33,7 +34,7 @@ public class LabWorkController {
     public Response addNewLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
                                   LabWork labWork)
     {
-        logger.info("Пришел запрос на добавление нового лаб ворка от пользователя: " + jwtUtil.extractUsername(jwtToken));
+        logger.info("Пришел запрос на добавление нового лаб ворка от пользователя: " + userService.getUsername(jwtToken));
         try {
             LabWorkTable createdLabWork = labWorkService.addLabWork(labWork);
             logger.info("Лаб воркер успешно добавлен.");
@@ -42,9 +43,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время добавления лаб воркера" + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+            throw new DefaultError(e.getMessage());
         }
     }
 
@@ -57,7 +56,7 @@ public class LabWorkController {
                                   LabWork labWork)
     {
         logger.info("Пришел запрос на обновление коллекции с id = " + id + '\n' +
-                "От пользователя " + jwtUtil.extractUsername(jwtToken));
+                "От пользователя " + userService.getUsername(jwtToken));
         try {
             LabWorkTable updatedLabWork = labWorkService.updateLabWork(id, labWork);
             logger.info("Лаб воркер успешно обновлен.");
@@ -66,9 +65,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время обновления лаб воркера." + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+            throw new DefaultError("Произошла ошибка во время обновления лаб воркера.");
         }
     }
 
@@ -80,7 +77,7 @@ public class LabWorkController {
                                   @PathParam("id") Long id)
     {
         logger.info("Пришел запрос на удаление лаб воркера по id = " + id + '\n' +
-                "От пользователя " + jwtUtil.extractUsername(jwtToken));
+                "От пользователя " + userService.getUsername(jwtToken));
         try {
             labWorkService.deleteLabWork(id);
             logger.info("Лаб воркер успешно удален.");
@@ -89,9 +86,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время удаления лаб воркера. " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+            throw new DefaultError("Произошла ошибка во время удаления лаб воркера." );
         }
     }
 
@@ -108,9 +103,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка при показе лаб воркеров. " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+            throw new DefaultError("Произошла ошибка при показе лаб воркеров.");
         }
     }
 
@@ -120,7 +113,7 @@ public class LabWorkController {
     public Response getLabWork(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken,
                                @PathParam("id") Long id) {
         logger.info("Пришел запрос на получение пользователя по id = " + id + '\n' +
-                "От пользователя " + jwtUtil.extractUsername(jwtToken));
+                "От пользователя " + userService.getUsername(jwtToken));
         try {
             LabWorkTable labWorkTable = labWorkService.getLabWorkById(id);
             logger.info("Удалось успешно получить лаь воркера.");
@@ -129,9 +122,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.info("Произошла ошибка при показе лаб воркера. " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+            throw new DefaultError("Произошла ошибка при показе лаб воркера.");
         }
     }
 }
