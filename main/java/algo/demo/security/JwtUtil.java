@@ -28,11 +28,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateToken(String username) {
-        return generateToken(username, Roles.USER);
-    }
-
-
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)

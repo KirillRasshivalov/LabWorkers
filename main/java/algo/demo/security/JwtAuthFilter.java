@@ -19,6 +19,9 @@ public class JwtAuthFilter implements ContainerRequestFilter {
     @Inject
     private JwtUtil jwtUtil;
 
+    @Inject
+    private TokenBlacklist tokenBlacklist;
+
     private static final String[] PUBLIC_PATHS = {
             "/auth/login",
             "/auth/register"
@@ -27,6 +30,7 @@ public class JwtAuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String path = requestContext.getUriInfo().getPath();
+
 
         if (isPublicPath(path)) {
             return;
@@ -39,6 +43,10 @@ public class JwtAuthFilter implements ContainerRequestFilter {
             return;
         }
         String token = authHeader.substring("Bearer ".length());
+        if (tokenBlacklist.isBlacklisted(token)) {
+            abortWithUnauthorized(requestContext, "Token revoked");
+            return;
+        }
         if (!jwtUtil.isTokenValid(token)) {
             abortWithUnauthorized(requestContext, "Invalid or expired token");
             return;
