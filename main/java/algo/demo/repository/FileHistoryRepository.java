@@ -10,6 +10,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+import java.util.List;
+
 @ApplicationScoped
 public class FileHistoryRepository {
 
@@ -42,5 +44,20 @@ public class FileHistoryRepository {
         importHistoryTable.setNumberOfAdds(fileHistory.numOfAdds());
         em.persist(importHistoryTable);
         em.getTransaction().commit();
+    }
+
+    public List<ImportHistoryTable> findCurrantUserHistory(String username) {
+        List<ImportHistoryTable> fileHistories = em.createQuery("SELECT i FROM ImportHistoryTable i WHERE i.user = :username",
+                ImportHistoryTable.class)
+                .setParameter("username", username)
+                .getResultList();
+        return fileHistories;
+    }
+
+    public List<ImportHistoryTable> findAll() {
+        List<ImportHistoryTable> fileHistories = em.createQuery("SELECT i FROM ImportHistoryTable i ",
+                ImportHistoryTable.class)
+                .getResultList();
+        return fileHistories;
     }
 }
