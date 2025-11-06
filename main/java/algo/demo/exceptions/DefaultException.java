@@ -1,7 +1,7 @@
 package algo.demo.exceptions;
 
-public class DefaultError extends RuntimeException {
-    public DefaultError(String message) {
+public class DefaultException extends RuntimeException {
+    public DefaultException(String message) {
         super("Что то пошло не так: " + message);
     }
 }
