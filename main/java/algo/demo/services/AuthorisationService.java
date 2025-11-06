@@ -47,11 +47,11 @@ public class AuthorisationService {
                 userRepository.registerUser(userLoginRequest.username(), passwordHasher.hash(userLoginRequest.password()));
             } catch (Exception e) {
                 logger.error("Что то пошло не так." + e.getMessage());
-                throw new RegistrationException("Что то пошло не так." + e.getMessage());
+                throw new RegistrationException(e.getMessage());
             }
         } else {
             logger.error("Что то пошло не так во время регистрации. Попробуйте другой логин.");
-            throw new RegistrationException("Что то пошло не так во время регистрации. Попробуйте другой логин.");
+            throw new RegistrationException("Попробуйте другой логин.");
         }
     }
 
