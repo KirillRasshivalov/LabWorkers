@@ -2,7 +2,7 @@ package algo.demo.controllers;
 
 import algo.demo.database.LabWorkTable;
 import algo.demo.dto.LabWork;
-import algo.demo.exceptions.DefaultError;
+import algo.demo.exceptions.DefaultException;
 import algo.demo.services.LabWorkService;
 import algo.demo.services.UserService;
 import jakarta.annotation.security.RolesAllowed;
@@ -44,7 +44,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время добавления лаб воркера" + e.getMessage());
-            throw new DefaultError(e.getMessage());
+            throw new DefaultException(e.getMessage());
         }
     }
 
@@ -66,7 +66,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время обновления лаб воркера." + e.getMessage());
-            throw new DefaultError("Произошла ошибка во время обновления лаб воркера.");
+            throw new DefaultException("Произошла ошибка во время обновления лаб воркера.");
         }
     }
 
@@ -87,7 +87,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка во время удаления лаб воркера. " + e.getMessage());
-            throw new DefaultError("Произошла ошибка во время удаления лаб воркера." );
+            throw new DefaultException("Произошла ошибка во время удаления лаб воркера." );
         }
     }
 
@@ -104,7 +104,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.error("Произошла ошибка при показе лаб воркеров. " + e.getMessage());
-            throw new DefaultError("Произошла ошибка при показе лаб воркеров.");
+            throw new DefaultException("Произошла ошибка при показе лаб воркеров.");
         }
     }
 
@@ -123,7 +123,7 @@ public class LabWorkController {
                     .build();
         } catch (Exception e) {
             logger.info("Произошла ошибка при показе лаб воркера. " + e.getMessage());
-            throw new DefaultError("Произошла ошибка при показе лаб воркера.");
+            throw new DefaultException("Произошла ошибка при показе лаб воркера.");
         }
     }
 }
