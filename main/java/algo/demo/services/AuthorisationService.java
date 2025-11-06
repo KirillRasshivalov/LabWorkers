@@ -57,7 +57,7 @@ public class AuthorisationService {
 
     public String getToken(UserLoginRequest userLoginRequest) {
         if (isDataCorrect(userLoginRequest)) {
-            return jwtUtil.generateToken(userLoginRequest.username());
+            return jwtUtil.generateToken(userLoginRequest.username(), userRepository.getRole(userLoginRequest.username()));
         }
         throw new LoginException("Неверные данные для входа. Проверьте пароль и имя пользовтаеля.");
     }
