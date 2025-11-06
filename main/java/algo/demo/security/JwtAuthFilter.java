@@ -1,5 +1,6 @@
 package algo.demo.security;
 
+import algo.demo.enums.Roles;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Priorities;
@@ -43,13 +44,15 @@ public class JwtAuthFilter implements ContainerRequestFilter {
             return;
         }
         String username;
+        Roles role;
         try {
             username = jwtUtil.extractUsername(token);
+            role = jwtUtil.extractRole(token);
         } catch (Exception e) {
             abortWithUnauthorized(requestContext, "Failed to extract user from token");
             return;
         }
-        setSecurityContext(requestContext, username);
+        setSecurityContext(requestContext, username, role);
     }
 
     private boolean isPublicPath(String path) {
@@ -67,7 +70,7 @@ public class JwtAuthFilter implements ContainerRequestFilter {
                 .build());
     }
 
-    private void setSecurityContext(ContainerRequestContext context, String username) {
+    private void setSecurityContext(ContainerRequestContext context, String username, Roles role) {
         final SecurityContext currentSecurityContext = context.getSecurityContext();
 
         context.setSecurityContext(new SecurityContext() {
@@ -77,8 +80,8 @@ public class JwtAuthFilter implements ContainerRequestFilter {
             }
 
             @Override
-            public boolean isUserInRole(String role) {
-                return true;
+            public boolean isUserInRole(String requiredRole) {
+                return role.name().equals(requiredRole);
             }
 
             @Override
