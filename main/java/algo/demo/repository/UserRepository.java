@@ -3,12 +3,15 @@ package algo.demo.repository;
 import algo.demo.EnvLoader;
 import algo.demo.PasswordHasher;
 import algo.demo.database.UsersTable;
+import algo.demo.enums.Roles;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
+import javax.management.relation.Role;
 
 
 @ApplicationScoped
@@ -63,5 +66,24 @@ public class UserRepository {
         userTable.setPassword(password);
         em.persist(userTable);
         em.getTransaction().commit();
+    }
+
+    public void setRole(String name, Roles role) {
+        em.getTransaction().begin();
+        UsersTable userTable = em.createQuery("SELECT u FROM UsersTable u WHERE u.name = :name",
+                UsersTable.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        userTable.setRole(role);
+        em.merge(userTable);
+        em.getTransaction().commit();
+    }
+
+    public Roles getRole(String name) {
+        Roles role = em.createQuery("SELECT ROLE(u) FROM UsersTable u WHERE u.name = :name",
+                Roles.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        return role == null ? Roles.USER : role;
     }
 }
