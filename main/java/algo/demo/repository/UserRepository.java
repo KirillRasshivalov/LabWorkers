@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import javax.management.relation.Role;
+import java.util.List;
 
 
 @ApplicationScoped
@@ -80,10 +81,18 @@ public class UserRepository {
     }
 
     public Roles getRole(String name) {
-        Roles role = em.createQuery("SELECT ROLE(u) FROM UsersTable u WHERE u.name = :name",
+        Roles role = em.createQuery("SELECT u.role FROM UsersTable u WHERE u.name = :name",
                 Roles.class)
                 .setParameter("name", name)
                 .getSingleResult();
         return role == null ? Roles.USER : role;
+    }
+
+    public List<UsersTable> getUsersOfSystem() {
+        List<UsersTable> usersTables = em.createQuery("SELECT u FROM UsersTable u WHERE u.role = :roles",
+                UsersTable.class)
+                .setParameter("roles", Roles.USER)
+                .getResultList();
+        return usersTables;
     }
 }
