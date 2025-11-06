@@ -2,6 +2,7 @@ package algo.demo.controllers;
 
 import algo.demo.services.FileDumpService;
 import algo.demo.services.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -14,6 +15,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import java.io.InputStream;
 
 @Path("/files")
+@RolesAllowed({"USER", "ADMIN"})
 public class FileDumpController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileDumpController.class);

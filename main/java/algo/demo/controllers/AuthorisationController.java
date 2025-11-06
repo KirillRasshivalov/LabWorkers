@@ -4,7 +4,6 @@ import algo.demo.dto.AuthResponse;
 import algo.demo.dto.UserLoginRequest;
 import algo.demo.exceptions.LoginException;
 import algo.demo.exceptions.RegistrationException;
-import algo.demo.security.JwtUtil;
 import algo.demo.services.AuthorisationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;

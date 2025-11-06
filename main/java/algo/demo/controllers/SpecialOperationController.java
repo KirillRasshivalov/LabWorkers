@@ -4,6 +4,7 @@ import algo.demo.database.CoordinatesTable;
 import algo.demo.database.LabWorkTable;
 import algo.demo.security.JwtUtil;
 import algo.demo.services.SpecialOperationsService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Path("/operations")
+@RolesAllowed({"ADMIN", "USER"})
 public class SpecialOperationController {
 
     private static final Logger logger = LoggerFactory.getLogger(SpecialOperationController.class);

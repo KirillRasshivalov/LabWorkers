@@ -3,9 +3,9 @@ package algo.demo.controllers;
 import algo.demo.database.LabWorkTable;
 import algo.demo.dto.LabWork;
 import algo.demo.exceptions.DefaultError;
-import algo.demo.security.JwtUtil;
 import algo.demo.services.LabWorkService;
 import algo.demo.services.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Path("/labworks")
+@RolesAllowed({"ADMIN", "USER"})
 public class LabWorkController {
 
     private static final Logger logger = LoggerFactory.getLogger(LabWorkController.class);
