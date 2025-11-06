@@ -24,4 +24,11 @@ public class UsersTable {
     @Column
     private Roles role;
 
+    @PrePersist
+    protected void onCreate() {
+        if (role == null) {
+            role = Roles.USER;
+        }
+    }
+
 }
