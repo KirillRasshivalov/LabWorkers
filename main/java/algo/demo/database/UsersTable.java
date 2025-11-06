@@ -1,5 +1,6 @@
 package algo.demo.database;
 
+import algo.demo.enums.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +20,8 @@ public class UsersTable {
 
     @Column(name="password")
     private String password;
+
+    @Column
+    private Roles role;
 
 }
