@@ -1,21 +1,21 @@
 package algo.demo.security;
 
+import algo.demo.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class TokenBlacklist {
 
-    private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
+    @Inject
+    private UserRepository userRepository;
 
-    public void blacklistToken(String token) {
-        blacklistedTokens.add(token);
-    }
+    @Inject
+    private JwtUtil jwtUtil;
+
 
     public boolean isBlacklisted(String token) {
-        return blacklistedTokens.contains(token);
+        return !jwtUtil.extractRole(token).equals(userRepository.getRole(jwtUtil.extractUsername(token)));
     }
 
 }

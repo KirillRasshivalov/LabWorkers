@@ -19,24 +19,44 @@ public class RoleAuthFilter implements ContainerRequestFilter {
             return;
         }
 
-        Method resourceMethod = getResourceMethod(requestContext);
-        if (resourceMethod != null) {
-            jakarta.annotation.security.RolesAllowed rolesAllowed =
-                    resourceMethod.getAnnotation(jakarta.annotation.security.RolesAllowed.class);
+        jakarta.annotation.security.RolesAllowed rolesAllowed = getRolesAllowedAnnotation(requestContext);
 
-            if (rolesAllowed != null) {
-                boolean hasAccess = false;
-                for (String requiredRole : rolesAllowed.value()) {
-                    if (requestContext.getSecurityContext().isUserInRole(requiredRole)) {
-                        hasAccess = true;
-                        break;
-                    }
-                }
-                if (!hasAccess) {
-                    abortWithForbidden(requestContext, "Insufficient permissions");
+        if (rolesAllowed != null) {
+            boolean hasAccess = false;
+            for (String requiredRole : rolesAllowed.value()) {
+                if (requestContext.getSecurityContext().isUserInRole(requiredRole)) {
+                    hasAccess = true;
+                    break;
                 }
             }
+
+            if (!hasAccess) {
+                abortWithForbidden(requestContext, "Insufficient permissions");
+            }
         }
+    }
+
+    private jakarta.annotation.security.RolesAllowed getRolesAllowedAnnotation(ContainerRequestContext context) {
+        try {
+            Object resourceMethodInvoker = context.getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");
+            if (resourceMethodInvoker != null) {
+                Method method = (Method) resourceMethodInvoker.getClass()
+                        .getMethod("getMethod")
+                        .invoke(resourceMethodInvoker);
+
+                jakarta.annotation.security.RolesAllowed methodAnnotation =
+                        method.getAnnotation(jakarta.annotation.security.RolesAllowed.class);
+                if (methodAnnotation != null) {
+                    return methodAnnotation;
+                }
+
+                Class<?> resourceClass = method.getDeclaringClass();
+                return resourceClass.getAnnotation(jakarta.annotation.security.RolesAllowed.class);
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting RolesAllowed annotation: " + e.getMessage());
+        }
+        return null;
     }
 
     private boolean isPublicPath(String path) {
@@ -47,14 +67,6 @@ public class RoleAuthFilter implements ContainerRequestFilter {
             }
         }
         return false;
-    }
-
-    private Method getResourceMethod(ContainerRequestContext context) {
-        try {
-            return (Method) context.getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     private void abortWithForbidden(ContainerRequestContext context, String message) {
