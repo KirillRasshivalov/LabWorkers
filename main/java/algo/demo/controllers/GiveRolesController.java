@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Path("/role")
-@RolesAllowed({"ADMIN"})
+@RolesAllowed("ADMIN")
 public class GiveRolesController {
 
     private static final Logger logger = LoggerFactory.getLogger(GiveRolesController.class);
@@ -27,7 +27,7 @@ public class GiveRolesController {
     @Produces(MediaType.TEXT_PLAIN)
     public Response assignRole(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken, UsersTable usersTable) {
         logger.info("Пришел запрос на выдачу прав доступа для юзера: " + usersTable.getName() +
-                " От админа: " + userService.getUsername(jwtToken));
+                " От админа: " + userService.getUsername(jwtToken) );
         try {
             userService.assignRoleToUser(usersTable.getName());
             logger.info("Роль успешно выдана.");
