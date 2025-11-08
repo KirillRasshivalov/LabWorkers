@@ -2,7 +2,6 @@ package algo.demo.services;
 
 import algo.demo.dto.FileHistory;
 import algo.demo.dto.LabWork;
-import algo.demo.exceptions.ParsingException;
 import algo.demo.parsers.FileParser;
 import algo.demo.repository.FileHistoryRepository;
 import algo.demo.repository.LabWorkRepository;

@@ -1,7 +1,6 @@
 package algo.demo.controllers;
 
 import algo.demo.database.UsersTable;
-import algo.demo.security.JwtUtil;
 import algo.demo.services.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
