@@ -5,10 +5,7 @@ import algo.demo.services.HistoryService;
 import algo.demo.services.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +28,7 @@ public class ShowHistoryController {
 
     @GET
     @Path("/files_dump")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response filesDumpHistory(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken) {
         logger.info("Пришел запрос на показ всех файлов которые были импортированы в программу." +
                 " От пользовтаеля: " + userService.getUsername(jwtToken));

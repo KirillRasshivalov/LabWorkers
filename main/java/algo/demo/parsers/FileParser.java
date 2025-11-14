@@ -54,9 +54,9 @@ public class FileParser {
                                 validateLabWork(labWork, lineNumber);
                                 labWorks.add(labWork);
                             } catch (ParsingException e) {
-                                throw new ParsingException("Ошибка в строке " + lineNumber + ": " + e.getMessage());
+                                throw new ParsingException("Ошибка в строке " + lineNumber);
                             } catch (Exception e) {
-                                throw new ParsingException("Ошибка парсинга JSON в строке " + lineNumber + ": " + e.getMessage());
+                                throw new ParsingException("Ошибка парсинга JSON в строке " + lineNumber);
                             }
                             inObject = false;
                             jsonBuffer.setLength(0);
