@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
+import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,8 +42,16 @@ public class LabWorkRepository {
         }
     }
 
+    private void setIsolationLevel() {
+        em.unwrap(org.hibernate.Session.class)
+                .doWork(connection -> {
+                    connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+                });
+    }
+
     public LabWorkTable addLbWork(LabWork labWork) {
         em.getTransaction().begin();
+        setIsolationLevel();
 
         CoordinatesTable coordinatesTable = new CoordinatesTable(
                 labWork.getCoordinates().getX(),
@@ -91,6 +100,8 @@ public class LabWorkRepository {
 
     public LabWorkTable updateLabWorkById(Long id, LabWork labWork) {
         em.getTransaction().begin();
+        setIsolationLevel();
+
         LabWorkTable labWorkExisting = em.find(LabWorkTable.class, id);
 
         CoordinatesTable existingCoordinates = labWorkExisting.getCoordinates();
@@ -179,6 +190,7 @@ public class LabWorkRepository {
 
     public void deleteLabWorkById(Long id) {
         em.getTransaction().begin();
+        setIsolationLevel();
         em.remove(em.find(LabWorkTable.class, id));
         em.getTransaction().commit();
     }
