@@ -4,6 +4,7 @@ import algo.demo.database.*;
 import algo.demo.dto.LabWork;
 import algo.demo.exceptions.DefaultException;
 import algo.demo.repository.LabWorkRepository;
+import algo.demo.validators.CollectionValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -20,8 +21,12 @@ public class LabWorkService {
     @Inject
     private LabWorkRepository labWorkRepository;
 
+    @Inject
+    private CollectionValidator collectionValidator;
+
     public LabWorkTable addLabWork(LabWork labWork) {
         try {
+            collectionValidator.validateLabWork(labWork);
             return labWorkRepository.addLbWork(labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -31,6 +36,7 @@ public class LabWorkService {
 
     public LabWorkTable updateLabWork(Long id, LabWork labWork) {
         try {
+            collectionValidator.validateLabWork(labWork);
             return labWorkRepository.updateLabWorkById(id, labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
