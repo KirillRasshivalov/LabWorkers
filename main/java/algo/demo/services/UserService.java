@@ -44,4 +44,8 @@ public class UserService {
             throw new DefaultException(e.getMessage());
         }
     }
+
+    public boolean isUserAdmin(String username) {
+        return userRepository.getRole(username) == Roles.ADMIN;
+    }
 }
