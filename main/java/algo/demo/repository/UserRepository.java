@@ -1,5 +1,6 @@
 package algo.demo.repository;
 
+import algo.demo.cache.CacheLogging;
 import algo.demo.EnvLoader;
 import algo.demo.PasswordHasher;
 import algo.demo.database.UsersTable;
@@ -39,6 +40,7 @@ public class UserRepository {
         }
     }
 
+    @CacheLogging
     public Boolean isNameInUse(String name) {
         Long count = em.createQuery("SELECT COUNT(u) FROM UsersTable u WHERE u.name = :name",
                         Long.class)
@@ -47,6 +49,7 @@ public class UserRepository {
         return count > 0;
     }
 
+    @CacheLogging
     public Boolean isUserExist(String name, String password) {
         try {
             UsersTable userTable = em.createQuery("SELECT u FROM UsersTable u WHERE u.name = :name",

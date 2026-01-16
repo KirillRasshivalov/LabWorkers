@@ -1,5 +1,6 @@
 package algo.demo.repository;
 
+import algo.demo.cache.CacheLogging;
 import algo.demo.EnvLoader;
 import algo.demo.database.*;
 import algo.demo.dto.LabWork;
@@ -49,6 +50,7 @@ public class LabWorkRepository {
                 });
     }
 
+    @CacheLogging
     public LabWorkTable addLbWork(LabWork labWork) {
         em.getTransaction().begin();
         setIsolationLevel();

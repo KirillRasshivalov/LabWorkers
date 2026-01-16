@@ -42,6 +42,8 @@ public class FileHistoryRepository {
         importHistoryTable.setStatus(fileHistory.status());
         importHistoryTable.setUser(fileHistory.user());
         importHistoryTable.setNumberOfAdds(fileHistory.numOfAdds());
+        importHistoryTable.setFileName(fileHistory.fileName());
+        importHistoryTable.setFileObjectName(fileHistory.fileObjectName());
         em.persist(importHistoryTable);
         em.getTransaction().commit();
     }
@@ -52,6 +54,10 @@ public class FileHistoryRepository {
                 .setParameter("username", username)
                 .getResultList();
         return fileHistories;
+    }
+
+    public ImportHistoryTable findById(Long id) {
+        return em.find(ImportHistoryTable.class, id);
     }
 
     public List<ImportHistoryTable> findAll() {
