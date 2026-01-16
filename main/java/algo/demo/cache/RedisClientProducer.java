@@ -31,8 +31,6 @@ public class RedisClientProducer {
         if (connection != null) {
             connection.close();
         }
-        if (redisClient != null) {
-            redisClient.shutdown();
-        }
+        if (redisClient != null)  redisClient.shutdown();
     }
 }

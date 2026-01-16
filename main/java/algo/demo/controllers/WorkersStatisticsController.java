@@ -32,7 +32,8 @@ public class WorkersStatisticsController {
     @Path("/main_info")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatistics(@HeaderParam(HttpHeaders.AUTHORIZATION) String jwtToken) {
-        logger.info("Пришел запрос на показ статистики от пользователя: " + userService.getUsername(jwtToken));
+        logger.info("Пришел запрос на показ статистики от пользователя: " +
+                userService.getUsername(jwtToken));
         try {
             StatisticInfo statisticInfo = specialOperationsService.collectStatistics(userService.getUsername(jwtToken));
             return Response.ok()

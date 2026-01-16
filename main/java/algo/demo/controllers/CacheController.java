@@ -29,7 +29,6 @@ public class CacheController {
     @Path("/statistics")
     public Response getStatistics() {
         logger.info("Вызван метод показа статистики.");
-
         if (emf == null) {
             try {
                 EnvLoader.loadEnv();

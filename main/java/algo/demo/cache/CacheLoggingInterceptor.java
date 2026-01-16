@@ -26,7 +26,6 @@ public class CacheLoggingInterceptor {
             String methodName = method.getName();
             logger.info("Статистика по кэшу для " + className + "." + methodName + "() =" );
         }
-
         return result;
     }
 
