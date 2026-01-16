@@ -1,3 +1,6 @@
 package algo.demo.dto;
 
-public record FileHistory(String status, String user, Long numOfAdds) {}
+import lombok.Builder;
+
+@Builder
+public record FileHistory(String status, String user, Long numOfAdds, String fileName, String fileObjectName) {}

@@ -22,4 +22,10 @@ public class ImportHistoryTable {
 
     @Column(name = "add_nums")
     private Long numberOfAdds;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_object_name")
+    private String fileObjectName;
 }
