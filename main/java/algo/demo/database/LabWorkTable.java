@@ -4,6 +4,8 @@ import algo.demo.enums.Difficulty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "lab_works")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class LabWorkTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
