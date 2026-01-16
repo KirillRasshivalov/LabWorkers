@@ -24,9 +24,13 @@ public class LabWorkService {
     @Inject
     private CollectionValidator collectionValidator;
 
+    @Inject
+    private SpecialOperationsService specialOperationsService;
+
     public LabWorkTable addLabWork(LabWork labWork) {
         try {
             collectionValidator.validateLabWork(labWork);
+            specialOperationsService.evictStatisticsCache();
             return labWorkRepository.addLbWork(labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -37,6 +41,7 @@ public class LabWorkService {
     public LabWorkTable updateLabWork(Long id, LabWork labWork) {
         try {
             collectionValidator.validateLabWork(labWork);
+            specialOperationsService.evictStatisticsCache();
             return labWorkRepository.updateLabWorkById(id, labWork);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -47,6 +52,7 @@ public class LabWorkService {
     public void deleteLabWork(Long id) {
         try {
             labWorkRepository.deleteLabWorkById(id);
+            specialOperationsService.evictStatisticsCache();
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DefaultException(e.getMessage());

@@ -5,6 +5,7 @@ import algo.demo.EnvLoader;
 import algo.demo.database.*;
 import algo.demo.dto.LabWork;
 import algo.demo.dto.Person;
+import algo.demo.dto.StatisticInfo;
 import algo.demo.enums.Color;
 import algo.demo.enums.Difficulty;
 import jakarta.annotation.PostConstruct;
@@ -256,5 +257,72 @@ public class LabWorkRepository {
         List<Difficulty> listOfDifficult = Arrays.asList(Difficulty.values());
         labWorkTable.setDifficulty(listOfDifficult.get(Math.max(0, listOfDifficult.indexOf(labWorkTable.getDifficulty()) - numToReduce)));
         em.merge(labWorkTable);
+    }
+
+    public StatisticInfo getStatisticInfo() {
+        String jpqlMaxHours = """
+        SELECT d.lectureHours, a.name
+        FROM LabWorkTable l
+        JOIN l.discipline d
+        JOIN l.author a
+        WHERE d.lectureHours = (
+            SELECT MAX(d2.lectureHours)
+            FROM LabWorkTable l2
+            JOIN l2.discipline d2
+        )
+        """;
+        List<Object[]> maxHoursResult = em.createQuery(jpqlMaxHours, Object[].class)
+                .setMaxResults(1)
+                .getResultList();
+
+        Integer maxHoursTeaching = null;
+        String maxHoursTeacher = null;
+        if (!maxHoursResult.isEmpty()) {
+            Object[] row = maxHoursResult.get(0);
+            Object hoursObj = row[0];
+            maxHoursTeaching = (hoursObj instanceof Number) ? ((Number) hoursObj).intValue() : null;
+            maxHoursTeacher = (String) row[1];
+        }
+
+        String jpqlMinWeight = """
+        SELECT a.weight, a.name
+        FROM LabWorkTable l
+        JOIN l.author a
+        WHERE a.weight = (
+            SELECT MIN(a2.weight)
+            FROM LabWorkTable l2
+            JOIN l2.author a2
+        )
+        """;
+        List<Object[]> minWeightResult = em.createQuery(jpqlMinWeight, Object[].class)
+                .setMaxResults(1)
+                .getResultList();
+
+        Integer weight = null;
+        String theLightestPearson = null;
+        if (!minWeightResult.isEmpty()) {
+            Object[] row = minWeightResult.get(0);
+            Object weightObj = row[0];
+            weight = (weightObj instanceof Number) ? ((Number) weightObj).intValue() : null;
+            theLightestPearson = (String) row[1];
+        }
+
+        String jpqlUniquePlaces = """
+        SELECT DISTINCT loc.name
+        FROM LabWorkTable l
+        JOIN l.author a
+        JOIN a.location loc
+        WHERE loc.name IS NOT NULL
+        """;
+        List<String> placesThereTeachersTeach = em.createQuery(jpqlUniquePlaces, String.class)
+                .getResultList();
+
+        return new StatisticInfo(
+                maxHoursTeaching,
+                maxHoursTeacher,
+                weight,
+                theLightestPearson,
+                placesThereTeachersTeach
+        );
     }
 }
